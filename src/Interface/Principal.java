@@ -1,9 +1,17 @@
 package Interface;
 
+import Functionalities.Analyzer_Lexico;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -13,14 +21,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author JeffGeo
  */
 public class Principal extends javax.swing.JFrame {
+
     private String Direction_File;
-    
+    private final String Extension = "er";
+
     public Principal() {
         initComponents();
-        Combobox(false);
+        Direction_File = "";                //Direction the file to the start
+        Activate_Desactivate_JCX(false);    // Desactive JCombobox to the start
     }
 
-  
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -102,9 +112,19 @@ public class Principal extends javax.swing.JFrame {
         File.add(open);
 
         save.setText("Save");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
         File.add(save);
 
         saveas.setText("Save as");
+        saveas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveasActionPerformed(evt);
+            }
+        });
         File.add(saveas);
 
         xml.setText("Generate Output XML");
@@ -123,6 +143,11 @@ public class Principal extends javax.swing.JFrame {
         tools.setText("   Tools   ");
 
         automatas.setText("Generate Automata");
+        automatas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                automatasActionPerformed(evt);
+            }
+        });
         tools.add(automatas);
 
         jMenuItem1.setText("Analyze Entries");
@@ -229,53 +254,123 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_exitActionPerformed
 
     private void openActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openActionPerformed
-        System.out.println("Hola Mundo");
-        String extension = "er";         // Extension for files suported
-        JFileChooser Select = new JFileChooser();                                       //New Object Chooser
-        FileNameExtensionFilter Filter = new FileNameExtensionFilter("Files er", extension); //Filter for FileChooser
-        File file;
-        
-        Select.setFileFilter(Filter);
-        if(Select.showDialog(null, "Abrir")==JFileChooser.APPROVE_OPTION){
-            file = Select.getSelectedFile();
-            if(file.canRead()){                     //If can read the file is open
-                if(file.getName().endsWith(extension)){
-                    Direction_File = file.getAbsolutePath();
-                    String Doc = OpenFile(file);
-                    input.setText(Doc);
-                }else{
-                    JOptionPane.showMessageDialog(null, "File Not Supported","Information",JOptionPane.INFORMATION_MESSAGE);
-                }
-            }else{
-                JOptionPane.showMessageDialog(null, "Not Can Read File","Information",JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
+        OpenFile();
     }//GEN-LAST:event_openActionPerformed
 
-    private void Combobox(boolean par){     //Turn jcombobox on or off
-        jctrees.setEnabled(par);
-        jcft.setEnabled(par);
-        jctt.setEnabled(par);
-        jca.setEnabled(par);
-    }
-    
-    private String  OpenFile(File file){    //Open the File and save it in a string 
-        String Doc = "";
-        try{
-            FileInputStream Input = new FileInputStream(file);
-            InputStreamReader Reader = new InputStreamReader(Input, "ISO-8859-1");  //Format and Save
-            BufferedReader Br1 = new BufferedReader(Reader);
-        
-            int ascci;
-            while((ascci=Br1.read())!=-1){
-                char caracter = (char)ascci;
-                Doc += caracter;
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        if (!Direction_File.isEmpty()) {
+            if (SaveFile()) {
+                JOptionPane.showMessageDialog(null, "File Saved", "Information", JOptionPane.INFORMATION_MESSAGE);
             }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Not Can Read File","Information",JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            if (SaveFileas()) {
+                JOptionPane.showMessageDialog(null, "File Saved", "Information", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
-        return Doc;
+    }//GEN-LAST:event_saveActionPerformed
+
+    private void saveasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveasActionPerformed
+        if (SaveFileas()) {
+            JOptionPane.showMessageDialog(null, "File Saved", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_saveasActionPerformed
+
+    private void automatasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_automatasActionPerformed
+        Analyzer_Lexico Al = new Analyzer_Lexico();
+        Al.Analyzer(input.getText());
+        System.out.println(Al.Imprimir());
+    }//GEN-LAST:event_automatasActionPerformed
+
+    private void Activate_Desactivate_JCX(boolean parameter) {     //Turn jcombobox on or off
+        jctrees.setEnabled(parameter);
+        jcft.setEnabled(parameter);
+        jctt.setEnabled(parameter);
+        jca.setEnabled(parameter);
     }
+
+    //Open, Save and Save as for File of input----------------------------------
+    private void OpenFile() {
+        JFileChooser Select = new JFileChooser();                                            //New Object Chooser
+        FileNameExtensionFilter Filter = new FileNameExtensionFilter("Files er", Extension); //Filter for FileChooser
+        File file;
+
+        Select.setFileFilter(Filter);
+        if (Select.showDialog(null, "Open") == JFileChooser.APPROVE_OPTION) {
+            file = Select.getSelectedFile();
+            if (file.canRead()) {                     //If can read the file is open
+                if (file.getName().endsWith(Extension)) {
+                    Direction_File = file.getAbsolutePath();
+                    String Doc = "";
+
+                    try {
+                        FileInputStream Input = new FileInputStream(file);
+                        InputStreamReader Reader = new InputStreamReader(Input, "ISO-8859-1");  //Format and Save
+                        BufferedReader Br1 = new BufferedReader(Reader);
+
+                        int ascci;
+                        while ((ascci = Br1.read()) != -1) {
+                            char caracter = (char) ascci;
+                            Doc += caracter;
+                        }
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, "Not Can Read File", "Information", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    input.setText(Doc);
+                } else {
+                    JOptionPane.showMessageDialog(null, "File Not Supported", "Information", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Not Can Read File", "Information", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
+
+    private Boolean SaveFile() {
+        Boolean Verify = false;
+        try {
+            FileWriter Writer = new FileWriter(Direction_File);
+            String txt = input.getText().replace("\n", "\r\n");
+            PrintWriter Print = new PrintWriter(Writer);
+            Print.print(txt);
+            Writer.close();
+            Verify = true;
+
+        } catch (IOException ex) {
+            Logger.getLogger(Principal.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+        return Verify;
+    }
+
+    private Boolean SaveFileas() {
+        Boolean Verify = false;
+        JFileChooser Select = new JFileChooser();                                            //New Object Chooser
+        FileNameExtensionFilter Filter = new FileNameExtensionFilter("Files er", Extension); //Filter for FileChooser
+        File file;
+
+        if (Select.showDialog(null, "Save") == JFileChooser.APPROVE_OPTION) {
+            file = Select.getSelectedFile();
+            if (file.getName().endsWith(Extension)) {
+                String Doc = input.getText().replace("\n", "\r\n");
+
+                try {
+                    FileOutputStream Output = new FileOutputStream(file);
+                    byte[] bytxt = Doc.getBytes();
+                    Output.write(bytxt);
+                    Verify = true;
+
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(Principal.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Principal.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return Verify;
+    }
+    //--------------------------------------------------------------------------
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu File;
     private javax.swing.JMenuItem about;

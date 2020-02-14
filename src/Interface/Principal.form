@@ -32,11 +32,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Save"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="saveas">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Save as"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveasActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="xml">
               <Properties>
@@ -62,6 +68,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Generate Automata"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="automatasActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
               <Properties>
