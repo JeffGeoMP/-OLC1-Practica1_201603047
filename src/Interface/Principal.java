@@ -1,6 +1,11 @@
 package Interface;
 
 import Functionalities.Analyzer_Lexico;
+import Functionalities.Expression;
+import Functionalities.Set;
+import Functionalities.Test;
+import Functionalities.Type_ER;
+import Structs.Tree;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -25,10 +31,18 @@ public class Principal extends javax.swing.JFrame {
     private String Direction_File;
     private final String Extension = "er";
 
+    private ArrayList<Object> Sets;
+    private ArrayList<Object> Expressions;
+    private ArrayList<Object> Tests;
+
     public Principal() {
         initComponents();
         Direction_File = "";                //Direction the file to the start
         Activate_Desactivate_JCX(false);    // Desactive JCombobox to the start
+
+        Sets = new ArrayList();
+        Expressions = new ArrayList();
+        Tests = new ArrayList();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -276,9 +290,34 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_saveasActionPerformed
 
     private void automatasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_automatasActionPerformed
-        Analyzer_Lexico Al = new Analyzer_Lexico();
-        Al.Analyzer(input.getText());
-        System.out.println(Al.Imprimir());
+        if (!input.getText().isEmpty()) {
+            Sets.clear();
+            Expressions.clear();
+            Tests.clear();
+
+            Analyzer_Lexico Al = new Analyzer_Lexico();
+            Al.Analyzer(input.getText());
+            Al.File_Separate(Sets, Expressions, Tests);
+
+//            for (int i = 0; i < Expressions.size(); i++)  {
+            Expression ex = (Expression) Expressions.get(0);
+            ArrayList<Object> Aux = new ArrayList();
+            Al.Analyze_Expressions(Aux, ex.getExpression());
+            for (int j = 0; j < Aux.size(); j++) {
+                Type_ER te = (Type_ER) Aux.get(j);
+                ex.getTreeEX().Insert(Name_Only(te) + j, te);
+//                    System.out.println("Nombre : "+j+te.getLexema()+ "  Symbol: "+te.getLexema());
+            }
+//            ex.getTreeEX().PreO();
+//            ex.getTreeEX().GenerateImage(0);
+//            }
+            ex.getTreeEX().Calculate();
+            ex.getTreeEX().printTree();
+            ex.getTreeEX().GenerateImage(22);
+
+        } else {
+            JOptionPane.showMessageDialog(null, "There is Nothing in the Text Area");
+        }
     }//GEN-LAST:event_automatasActionPerformed
 
     private void Activate_Desactivate_JCX(boolean parameter) {     //Turn jcombobox on or off
@@ -370,7 +409,30 @@ public class Principal extends javax.swing.JFrame {
         }
         return Verify;
     }
+
     //--------------------------------------------------------------------------
+    private String Name_Only(Type_ER x) {
+        String name = "";
+        if (x.getType() == 1) {
+            if (x.getLexema().equalsIgnoreCase("+")) {
+                name = "Mas";
+            } else if (x.getLexema().equalsIgnoreCase("*")) {
+                name = "Asterisco";
+            } else if (x.getLexema().equalsIgnoreCase("?")) {
+                name = "Interrogacion";
+            } else if (x.getLexema().equalsIgnoreCase("|")) {
+                name = "Or";
+            } else {
+                name = "Concatenacion";
+            }
+        } else if (x.getType() == 2) {
+            name = "Cadena";
+        } else {
+            name = "Set";
+        }
+        return name;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu File;
     private javax.swing.JMenuItem about;

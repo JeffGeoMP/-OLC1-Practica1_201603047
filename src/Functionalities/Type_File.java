@@ -4,7 +4,7 @@ package Functionalities;
  *
  * @author JeffGeo
  */
-public class Type {
+public class Type_File {
 
     public static final int Reserved_Word = 1;
     public static final int Id = 2;
@@ -35,7 +35,7 @@ public class Type {
         this.Type = Type;
     }
 
-    public Type(String Lexema, int Type) {
+    public Type_File(String Lexema, int Type) {
         this.Lexema = Lexema;
         this.Type = Type;
     }
@@ -72,6 +72,8 @@ public class Type {
                     return "Symbol of Expression Regular [.]";
                 } else if (this.getLexema().equals("?")) {
                     return "Symbol of Expression Regular [?]";
+                } else if (this.getLexema().equals("|")) {
+                    return "Symbol of Expression Regular [|]";
                 }
 
             case 9:
@@ -89,14 +91,15 @@ public class Type {
                     return "Porcentage";
                 } else if (this.getLexema().equals(",")) {
                     return "Comma";
-                } else{
-                    return "Sign Complementary ["+this.getLexema()+"]";
+                } else {
+                    return "Sign Complementary [" + this.getLexema() + "]";
                 }
 
             default:
                 return "xxx";
         }
     }
+
     public String ToString() {
         return this.getLexema() + "   " + Parser(this.getType());
     }

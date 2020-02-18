@@ -1,0 +1,18 @@
+digraph G {
+rankdir=TB
+node [shape = circle, style=filled, fillcolor=seashell2,width=0.8, fixedsize=true]
+Concatenacion0 [label="."]
+Concatenacion1 [label="."]
+Concatenacion2 [label="."]
+Cadena3 [label="a"]Concatenacion2->Cadena3
+Asterisco4 [label="*"]
+Or5 [label="|"]
+Cadena6 [label="a"]Or5->Cadena6
+Cadena7 [label="b"]Or5->Cadena7
+Asterisco4->Or5
+Concatenacion2->Asterisco4
+Concatenacion1->Concatenacion2
+Cadena8 [label="b"]Concatenacion1->Cadena8
+Concatenacion0->Concatenacion1
+Cadena9 [label="#"]Concatenacion0->Cadena9
+}

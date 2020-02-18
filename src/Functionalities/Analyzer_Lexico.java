@@ -8,9 +8,9 @@ import java.util.ArrayList;
  */
 public class Analyzer_Lexico {
 
-    private ArrayList<Object> Tokens;
-    private ArrayList<String> Mistakes;
-    private String[] ReservedWords;
+    private ArrayList<Object> Tokens;       //Save Tokens of file
+    private ArrayList<String> Mistakes;     //Save Stakes of file
+    private String[] ReservedWords;         //Word's Reserved 
 
     private String Lexema;
     private int Indice, Estado;
@@ -24,11 +24,11 @@ public class Analyzer_Lexico {
         Indice = 0;
         Estado = 0;
 
-        Load_Words();
+        Load_Words_Reserved();
     }
 
     // Load Words Reserved to the System----------------------------------------
-    private void Load_Words() {
+    private void Load_Words_Reserved() {
         this.ReservedWords[0] = "CONJ";
     }
 
@@ -52,8 +52,8 @@ public class Analyzer_Lexico {
 
     // Check is it's Symbol of Expression Regular ------------------------------
     private Boolean IsSymbolER(String lexema) {
-        if(lexema.equals("+")| lexema.equals("|") | lexema.equals(".") |
-                lexema.equals("?") | lexema.equals("*")){
+        if (lexema.equals("+") | lexema.equals("|") | lexema.equals(".")
+                | lexema.equals("?") | lexema.equals("*")) {
             return true;
         }
         return false;
@@ -61,8 +61,8 @@ public class Analyzer_Lexico {
 
     // Check is it's Symbol Complementary --------------------------------------
     private Boolean IsSymbol(int code) {
-        if ((code >= 32 && code <= 47) | (code >= 58 && code <= 64) //Code's 32 -> 125
-                | (code >= 91 && code <= 96) | (code >= 123 && code <= 125)) {
+        if ((code > 32 && code <= 47) | (code >= 58 && code <= 64) //Code's 32 -> 125
+                | (code >= 91 && code <= 96) | (code >= 123 && code <= 126)) {
             return true;
         }
         return false;
@@ -84,11 +84,219 @@ public class Analyzer_Lexico {
         return false;
     }
 
+    public String Imprimir() {
+        String txt = "";
+        Type_File t;
+        for (int i = 0; i < Tokens.size(); i++) {
+            t = (Type_File) Tokens.get(i);
+            txt += t.ToString() + "\n";
+        }
+
+        for (int i = 0; i < Mistakes.size(); i++) {
+            txt += Mistakes.get(i) + "\n";
+        }
+        return txt;
+    }
+    
+    private String DeleteChar(String chain){
+        String ret="";
+        for(int i = 0; i<chain.length(); i++){
+            if(i!=0 && i+1!=chain.length()){
+                ret += chain.charAt(i);
+            }
+        }
+        return ret;
+    }
+    
+    public void File_Separate(ArrayList Sets, ArrayList Expressions, ArrayList Tests) {
+        Type_File t;
+        String Id = "";
+        String Set = "";
+        Boolean WR = false;
+        Boolean Two = false;
+        Boolean Comma = false;
+        Boolean Asignation = false;
+
+        //Separate Sets---------------------------------------------------------
+        for (int i = 0; i < Tokens.size(); i++) {
+            t = (Type_File) Tokens.get(i);
+            if (t.getLexema().equalsIgnoreCase(this.ReservedWords[0])) {
+                WR = true;
+            } else if (t.getLexema().equalsIgnoreCase(":")) {
+                Two = true;
+            } else if (WR && Two && Id.length() == 0) {
+                Id = t.getLexema();
+
+            } else if (t.getLexema().equalsIgnoreCase("->")) {
+                Asignation = true;
+
+            } else if (t.getLexema().equalsIgnoreCase(";")) {
+                if (!Id.isEmpty() && !Set.isEmpty()) {
+                    Sets.add(new Set(Id, Set));
+                    Id = "";
+                    Set = "";
+                    WR = false;
+                    Two = false;
+                    Comma = false;
+                    Asignation = false;
+                }
+
+            } else if (WR && Two && Asignation && Id.length() != 0) {
+                Set += t.getLexema();
+            }
+        }
+
+        //Separeta Expression Regular ------------------------------------------
+        WR = false;
+        Comma = false;
+        Asignation = false;
+        Boolean Identifier = false;
+        Id = "";
+        String Expression = "";
+
+        for (int i = 0; i < Tokens.size(); i++) {
+            t = (Type_File) Tokens.get(i);
+            if (t.getLexema().equalsIgnoreCase(this.ReservedWords[0])) {
+                WR = true;
+            } else if (t.getLexema().equalsIgnoreCase("->")) {
+                Asignation = true;
+            } else if (t.getType() == Type_File.Id && WR == false) {
+                if (Id.length() == 0) {
+                    Id = t.getLexema();
+                } else {
+                    Expression += t.getLexema();
+                }
+            } else if (t.getLexema().equalsIgnoreCase(";")) {
+                if (WR == true) {
+                    WR = false;
+                    Id = "";
+                } else {
+                    if (Id.length() != 0 && Expression.length() != 0) {
+                        Expressions.add(new Expression(Id, Expression));
+                        Id = "";
+                        Expression = "";
+                        Asignation = false;
+                    }
+                }
+            } else if (WR == false && Id.length() != 0 && Asignation == true) {
+                Expression += t.getLexema();
+            } else if (t.getLexema().equalsIgnoreCase("%")) {
+                break;
+            }
+        }
+        //Separate Test cadenas -----------------------------------------------
+        int pg = 0;
+        Id = "";
+        String test = "";
+        Asignation = false;
+        for (int i = 0; i < Tokens.size(); i++) {
+            t = (Type_File) Tokens.get(i);
+            if (t.getLexema().equalsIgnoreCase("%")) {
+                pg++;
+            } else if (pg >= 4 && t.getType() == Type_File.Id) {
+                Id = t.getLexema();
+            } else if (pg >= 4 && t.getLexema().equalsIgnoreCase("->")) {
+                Asignation = true;
+
+            } else if (pg >= 4 && t.getLexema().equalsIgnoreCase(";")) {
+                if (Id.length() != 0 && test.length() != 0) {
+                    Tests.add(new Test(Id, test));
+                    Id = "";
+                    test = "";
+                    Asignation = false;
+                }
+            } else if (pg >= 4 && Asignation == true) {
+                test += t.getLexema();
+            }
+        }
+    }
+
+    //Analyzer Aux -------------------------------------------------------------
+    public void Analyze_Expressions(ArrayList Aux, String Expression) {
+        Aux.clear();
+        Indice = 0;
+        Estado = 0;
+        Lexema = "";
+        Expression += "\n";
+        for (Indice = 0; Indice < Expression.length(); Indice++) {
+            char letter = Expression.charAt(Indice);
+            int code = (int) letter;
+
+            switch (Estado) {
+
+                case 0:
+                    if (this.IsSymbolER(letter + "")) {
+                        Estado = 1;
+                        Lexema += letter;
+                    } else if (letter == '"') {
+                        Estado = 2;
+                        Lexema += letter;
+                    } else if (letter == '{') {
+                        Estado = 4;
+                        Lexema += letter;
+                        
+                    }else if(letter == ' ' | letter == '\n'){
+                        
+                                
+                    } else {
+                        System.out.println("Fatal Error ->" + letter);
+                    }
+                    break;
+
+                case 1:
+                    Aux.add(new Type_ER(Lexema, Type_ER.Symbol_Expression_Regular));
+                    Lexema = "";
+                    Estado = 0;
+                    Indice--;
+                    break;
+
+                case 2:
+                    if (letter == '"') {
+                        Estado = 3;
+                        Lexema += letter;
+                    } else {
+                        Estado = 2;
+                        Lexema += letter;
+                    }
+                    break;
+
+                case 3:
+                    Lexema = this.DeleteChar(Lexema);
+                    Aux.add(new Type_ER(Lexema, Type_ER.Cadena));
+                    Lexema = "";
+                    Estado = 0;
+                    Lexema = "";
+                    Indice--;
+                    break;
+
+                case 4:
+                    if (letter == '}') {
+                        Estado = 5;
+                        Lexema += letter;
+                    } else {
+                        Estado = 4;
+                        Lexema += letter;
+                    }
+                    break;
+
+                case 5:
+                    Lexema = this.DeleteChar(Lexema);
+                    Aux.add(new Type_ER(Lexema, Type_ER.Set));
+                    Lexema = "";
+                    Estado = 0;
+                    Indice--;
+                    break;
+            }
+        }
+    }
+    
+    //Analyzer Principal -------------------------------------------------------
     public void Analyzer(String Input) {
         Tokens.clear();
         Mistakes.clear();
         Indice = 0;
         Estado = 0;
+        Lexema = "";
 
         String txt = Input + "\n";
         String Temp = "";
@@ -135,10 +343,9 @@ public class Analyzer_Lexico {
                     } else if (this.IsSymbol(code)) {
                         Estado = 14;
                         Lexema += letter;
-                    } else if (letter == ' ') {
+                    } else if (letter == ' ' | letter == '\n') {
                         Estado = 0;
                         Lexema = "";
-
                     } else {
                         Mistakes.add("Error Unsupported Character [" + letter + "]");
                         Estado = 0;
@@ -151,7 +358,7 @@ public class Analyzer_Lexico {
                         Estado = 1;
                         Lexema += letter;
                     } else {
-                        Tokens.add(new Type(Lexema, Type.Number));
+                        Tokens.add(new Type_File(Lexema, Type_File.Number));
                         Lexema = "";
                         Estado = 0;
                         Indice--;
@@ -164,12 +371,12 @@ public class Analyzer_Lexico {
                         Lexema += letter;
                     } else {
                         if (this.IsWR(Lexema)) {
-                            Tokens.add(new Type(Lexema, Type.Reserved_Word));
+                            Tokens.add(new Type_File(Lexema, Type_File.Reserved_Word));
                             Lexema = "";
                             Estado = 0;
                             Indice--;
                         } else {
-                            Tokens.add(new Type(Lexema, Type.Id));
+                            Tokens.add(new Type_File(Lexema, Type_File.Id));
                             Lexema = "";
                             Estado = 0;
                             Indice--;
@@ -179,7 +386,7 @@ public class Analyzer_Lexico {
 
                 case 3:
                     if (this.IsSC(code)) {
-                        Tokens.add(new Type(Lexema, Type.Symbol_C));
+                        Tokens.add(new Type_File(Lexema, Type_File.Symbol_C));
                         Lexema = "";
                         Estado = 0;
                         Indice--;
@@ -193,7 +400,7 @@ public class Analyzer_Lexico {
                     break;
 
                 case 4:
-                    Tokens.add(new Type(Lexema, Type.Cadena));
+                    Tokens.add(new Type_File(Lexema, Type_File.Cadena));
                     Lexema = "";
                     Estado = 0;
                     Indice--;
@@ -201,7 +408,7 @@ public class Analyzer_Lexico {
 
                 case 5:
                     if (this.IsSC(code)) {
-                        Tokens.add(new Type(Lexema, Type.Symbol_C));
+                        Tokens.add(new Type_File(Lexema, Type_File.Symbol_C));
                         Lexema = "";
                         Estado = 0;
                         Indice--;
@@ -226,7 +433,7 @@ public class Analyzer_Lexico {
                     break;
 
                 case 7:
-                    Tokens.add(new Type(Lexema, Type.Comment_of_a_line));
+                    Tokens.add(new Type_File(Lexema, Type_File.Comment_of_a_line));
                     Estado = 0;
                     Lexema = "";
                     Indice--;
@@ -234,7 +441,7 @@ public class Analyzer_Lexico {
 
                 case 8:
                     if (this.IsSC(code)) {
-                        Tokens.add(new Type(Lexema, Type.Symbol_C));
+                        Tokens.add(new Type_File(Lexema, Type_File.Symbol_C));
                         Lexema = "";
                         Estado = 0;
                         Indice--;
@@ -270,7 +477,7 @@ public class Analyzer_Lexico {
                     break;
 
                 case 11:
-                    Tokens.add(new Type(Lexema, Type.Comment_Multiline));
+                    Tokens.add(new Type_File(Lexema, Type_File.Comment_Multiline));
                     Estado = 0;
                     Lexema += letter;
                     Indice--;
@@ -278,7 +485,7 @@ public class Analyzer_Lexico {
 
                 case 12:
                     if (this.IsSC(code)) {
-                        Tokens.add(new Type(Lexema, Type.Symbol_C));
+                        Tokens.add(new Type_File(Lexema, Type_File.Symbol_C));
                         Lexema = "";
                         Estado = 0;
                         Indice--;
@@ -294,20 +501,20 @@ public class Analyzer_Lexico {
                     break;
 
                 case 13:
-                    Tokens.add(new Type(Lexema, Type.Asignation));
+                    Tokens.add(new Type_File(Lexema, Type_File.Asignation));
                     Estado = 0;
                     Lexema = "";
                     Indice--;
                     break;
 
                 case 14:
-                    if(this.IsSymbolER(Lexema)){
-                        Tokens.add(new Type(Lexema, Type.Symbol_ER));
+                    if (this.IsSymbolER(Lexema)) {
+                        Tokens.add(new Type_File(Lexema, Type_File.Symbol_ER));
                         Estado = 0;
                         Lexema = "";
                         Indice--;
-                    }else{
-                        Tokens.add(new Type(Lexema, Type.Symbol_C));
+                    } else {
+                        Tokens.add(new Type_File(Lexema, Type_File.Symbol_C));
                         Estado = 0;
                         Lexema = "";
                         Indice--;
@@ -315,19 +522,5 @@ public class Analyzer_Lexico {
                     break;
             }
         }
-    }
-    
-    public  String Imprimir(){
-        String txt = "";
-        Type t;
-        for(int i = 0; i<Tokens.size(); i++){
-            t = (Type)Tokens.get(i);
-            txt += t.ToString()+"\n";    
-        }
-
-        for(int i = 0; i<Mistakes.size(); i++){
-            txt += Mistakes.get(i) + "\n";
-        }
-        return txt;
     }
 }
