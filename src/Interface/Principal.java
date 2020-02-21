@@ -306,14 +306,20 @@ public class Principal extends javax.swing.JFrame {
             for (int j = 0; j < Aux.size(); j++) {
                 Type_ER te = (Type_ER) Aux.get(j);
                 ex.getTreeEX().Insert(Name_Only(te) + j, te);
-//                    System.out.println("Nombre : "+j+te.getLexema()+ "  Symbol: "+te.getLexema());
+                System.out.println(te.getLexema() +" Tipo: "+te.getType());
             }
 //            ex.getTreeEX().PreO();
 //            ex.getTreeEX().GenerateImage(0);
 //            }
-            ex.getTreeEX().Calculate();
-            ex.getTreeEX().printTree();
+           ex.getTreeEX().Calculate();  
+           ex.getTreeEX().Table_Follow();
+//           ex.getTreeEX().printTree();
+            
             ex.getTreeEX().GenerateImage(22);
+            System.out.println("Tabla de Siguientes");
+            ex.getTreeEX().PrintT();
+            System.out.println("Tabla de Transiciones");
+            ex.getTreeEX().Table_Transitions();
 
         } else {
             JOptionPane.showMessageDialog(null, "There is Nothing in the Text Area");

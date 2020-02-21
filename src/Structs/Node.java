@@ -13,7 +13,7 @@ public class Node {
     Type_ER Information;
     boolean Anulable;
     String First;
-    String Follow;
+    String Last;
     int Nivel;
     String Name;
     
@@ -22,7 +22,7 @@ public class Node {
         this.Right = null;
         this.Anulable = false; 
         this.First = "";
-        this.Follow = "";
+        this.Last = "";
         this.Name = name;
         this.Information = Information;
         this.Nivel = 0;
