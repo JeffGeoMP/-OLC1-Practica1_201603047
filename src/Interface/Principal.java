@@ -48,21 +48,20 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Group1 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         input = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         jctrees = new javax.swing.JComboBox<>();
-        jcft = new javax.swing.JComboBox<>();
-        jctt = new javax.swing.JComboBox<>();
-        jca = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         view = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        output = new javax.swing.JTextArea();
+        rtrees = new javax.swing.JRadioButton();
+        rft = new javax.swing.JRadioButton();
+        rtt = new javax.swing.JRadioButton();
+        ra = new javax.swing.JRadioButton();
         menu = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         open = new javax.swing.JMenuItem();
@@ -86,32 +85,37 @@ public class Principal extends javax.swing.JFrame {
         input.setRows(5);
         jScrollPane1.setViewportView(input);
 
-        jLabel1.setText("Trees in System");
+        jLabel1.setText("Expression in System");
 
-        jLabel2.setText("Following Table");
-
-        jLabel3.setText("Transition Table");
-
-        jLabel4.setText("Automatas");
-
-        jctrees.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jcft.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jctt.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jca.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jctrees.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---------- Select Option ----------" }));
 
         jLabel5.setText("Input File");
 
         view.setText("View Image");
+        view.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Output");
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setForeground(new java.awt.Color(0, 0, 255));
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
+        output.setColumns(20);
+        output.setForeground(new java.awt.Color(0, 0, 255));
+        output.setRows(5);
+        jScrollPane2.setViewportView(output);
+
+        Group1.add(rtrees);
+        rtrees.setText("View Image of Tree");
+
+        Group1.add(rft);
+        rft.setText("View Image of Table Follow");
+
+        Group1.add(rtt);
+        rtt.setText("View Image of Table Transitions");
+
+        Group1.add(ra);
+        ra.setText("View Image of Automata");
 
         menu.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Menu", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
@@ -198,60 +202,52 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jctrees, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jcft, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jctt, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jca, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel6)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel1)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(view, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE))))
+                                    .addComponent(view, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(ra, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(rtt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                                        .addComponent(rtrees, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(rft, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jctrees, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jctrees, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jcft, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jctt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(view)))
-                .addGap(14, 14, 14)
+                        .addComponent(rtrees)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rft)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rtt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(ra)
+                        .addGap(30, 30, 30)
+                        .addComponent(view))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
@@ -295,42 +291,73 @@ public class Principal extends javax.swing.JFrame {
             Expressions.clear();
             Tests.clear();
 
+            jctrees.removeAllItems();
+            jctrees.addItem("---------- Select Option ----------");
+            output.setText("");
+
             Analyzer_Lexico Al = new Analyzer_Lexico();
             Al.Analyzer(input.getText());
             Al.File_Separate(Sets, Expressions, Tests);
 
-//            for (int i = 0; i < Expressions.size(); i++)  {
-            Expression ex = (Expression) Expressions.get(0);
-            ArrayList<Object> Aux = new ArrayList();
-            Al.Analyze_Expressions(Aux, ex.getExpression());
-            for (int j = 0; j < Aux.size(); j++) {
-                Type_ER te = (Type_ER) Aux.get(j);
-                ex.getTreeEX().Insert(Name_Only(te) + j, te);
-                System.out.println(te.getLexema() +" Tipo: "+te.getType());
+            for (int i = 0; i < Expressions.size(); i++) {
+                Expression exp = (Expression) Expressions.get(i);
+                ArrayList<Object> aux = new ArrayList();
+                Al.Analyze_Expressions(aux, exp.getExpression());
+                for (int j = 0; j < aux.size(); j++) {
+                    Type_ER te = (Type_ER) aux.get(j);
+                    exp.getTreeEX().Insert(this.Name_Only(te) + j, te);
+                }
+                exp.getTreeEX().Calculate();
+                exp.getTreeEX().Table_Follow();
+                exp.getTreeEX().Table_Transitions();
             }
-//            ex.getTreeEX().PreO();
-//            ex.getTreeEX().GenerateImage(0);
-//            }
-           ex.getTreeEX().Calculate();  
-           ex.getTreeEX().Table_Follow();
-//           ex.getTreeEX().printTree();
-            
-            ex.getTreeEX().GenerateImage(22);
-            System.out.println("Tabla de Siguientes");
-            ex.getTreeEX().PrintT();
-            System.out.println("Tabla de Transiciones");
-            ex.getTreeEX().Table_Transitions();
 
         } else {
-            JOptionPane.showMessageDialog(null, "There is Nothing in the Text Area");
+            JOptionPane.showMessageDialog(null, "There is Nothing in the Text Area", "Information", JOptionPane.INFORMATION_MESSAGE);
         }
+        Activate_Desactivate_JCX(true);
+        Load_JCombobox();
+        output.setText(this.SetsSystem());
     }//GEN-LAST:event_automatasActionPerformed
+
+    private void viewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewActionPerformed
+        Analyzer_Lexico Al = new Analyzer_Lexico();
+
+        if (jctrees.getSelectedIndex() != 0) {
+            String current_id = (String) jctrees.getSelectedItem();
+            Tree Current_Tree = this.FindExpression(current_id);
+            if (Current_Tree != null) {
+                if (rtrees.isSelected()) {
+                    Current_Tree.GenerateImageTree(current_id + "Tree");
+                    JOptionPane.showMessageDialog(null, "Mostrando: " + current_id, "Informaciont", JOptionPane.INFORMATION_MESSAGE);
+                    Images img = new Images(current_id + "Tree");
+                    img.setVisible(true);
+                } else if (rft.isSelected()) {
+                    Current_Tree.GenerateImageTableF(current_id + "TF");
+                    JOptionPane.showMessageDialog(null, "Mostrando: " + current_id, "Informaciont", JOptionPane.INFORMATION_MESSAGE);
+                    Images img = new Images(current_id + "TF");
+                    img.setVisible(true);
+                } else if (rtt.isSelected()) {
+                    Current_Tree.GenerateImageTableT(current_id + "TT");
+                    JOptionPane.showMessageDialog(null, "Mostrando: " + current_id, "Informaciont", JOptionPane.INFORMATION_MESSAGE);
+                    Images img = new Images(current_id + "TT");
+                    img.setVisible(true);
+                } else if (ra.isSelected()) {
+                    Current_Tree.GenerateImageAFD(current_id + "AFD");
+                    JOptionPane.showMessageDialog(null, "Mostrando: " + current_id, "Informaciont", JOptionPane.INFORMATION_MESSAGE);
+                    Images img = new Images(current_id + "AFD");
+                    img.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Not Option Selected", "Information", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Not Option Selected in List", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_viewActionPerformed
 
     private void Activate_Desactivate_JCX(boolean parameter) {     //Turn jcombobox on or off
         jctrees.setEnabled(parameter);
-        jcft.setEnabled(parameter);
-        jctt.setEnabled(parameter);
-        jca.setEnabled(parameter);
     }
 
     //Open, Save and Save as for File of input----------------------------------
@@ -439,17 +466,49 @@ public class Principal extends javax.swing.JFrame {
         return name;
     }
 
+    private void Load_JCombobox() {
+        for (Object temp : this.Expressions) {
+            Expression x = (Expression) temp;
+            jctrees.addItem(x.getIdentifier());
+        }
+    }
+
+    private String SetsSystem() {
+        String temp = output.getText();
+        temp += "Conjuntos en Sistema: \n";
+        for (Object x : Sets) {
+            Set s = (Set) x;
+            temp += "Id " + s.getIdentifier() + " Conjunto: " + s.getSet() + "\n";
+        }
+        for (Object x : Tests) {
+            Test s = (Test) x;
+            temp += "Expresion a Evaluar: " + s.getIdentifier() + " Cadena a Comprobar: " + s.getCadena() + "\n";
+        }
+        return temp;
+    }
+
+    private Tree FindExpression(String Id) {
+        Tree result = null;
+        for (Object x : Expressions) {
+            Expression exp = (Expression) x;
+            if (Id.equals(exp.getIdentifier())) {
+                result = exp.getTreeEX();
+                break;
+            }
+        }
+        return result;
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu File;
+    private javax.swing.ButtonGroup Group1;
     private javax.swing.JMenuItem about;
     private javax.swing.JMenuItem automatas;
     private javax.swing.JMenuItem exit;
     private javax.swing.JMenu help;
     private javax.swing.JTextArea input;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JMenuItem jMenuItem1;
@@ -457,13 +516,14 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JComboBox<String> jca;
-    private javax.swing.JComboBox<String> jcft;
     private javax.swing.JComboBox<String> jctrees;
-    private javax.swing.JComboBox<String> jctt;
     private javax.swing.JMenuBar menu;
     private javax.swing.JMenuItem open;
+    private javax.swing.JTextArea output;
+    private javax.swing.JRadioButton ra;
+    private javax.swing.JRadioButton rft;
+    private javax.swing.JRadioButton rtrees;
+    private javax.swing.JRadioButton rtt;
     private javax.swing.JMenuItem save;
     private javax.swing.JMenuItem saveas;
     private javax.swing.JMenu tools;

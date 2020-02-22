@@ -28,15 +28,7 @@ public class Tree {
         this.State = 0;
     }
 
-    private boolean IsTwo(String lexema) {
-        return lexema.equals(".") | lexema.equals("|");
-    }
-
-    private boolean IsUnity(String lexema) {
-        return lexema.equalsIgnoreCase("?") | lexema.equalsIgnoreCase("*")
-                | lexema.equalsIgnoreCase("+");
-    }
-
+    //Insert in Table for Tree -------------------------------------------------
     public void Insert(String name, Type_ER te) {
         Node n = new Node(name, te);
 
@@ -73,14 +65,12 @@ public class Tree {
                     int current_nivel = temp.Nivel;
                     if (temp.Information.getType() == 1) {
                         if (this.IsTwo(temp.Information.getLexema())) {
-//                            if (temp.Information.getLexema().equalsIgnoreCase("|") | temp.I) {
                             if (temp.Right == null) {
                                 temp.Right = n;
                                 n.Nivel = current_nivel + 1;
                                 or = true;
                                 break;
                             }
-//                            }
                         }
                     }
                 }
@@ -89,94 +79,11 @@ public class Tree {
         }
     }
 
-    public void printTree() {
-        for (int i = 0; i < Symbols.size(); i++) {
-            Node n = (Node) Symbols.get(i);
-            if (n.Left == null && n.Right == null) {
-                System.out.println("Nombre: " + n.Name + " Symbol: " + n.Information.getLexema() + " Izquierda: ----------          Derecha: ----------  Primeros: " + n.First + "Siguientes: " + n.Last + "Anulable: " + n.Anulable + "Nivel: " + n.Nivel);
-            } else if (n.Left != null && n.Right == null) {
-                System.out.println("Nombre: " + n.Name + " Symbol: " + n.Information.getLexema() + " Izquierda: " + n.Left.Name + "  Derecha: ----------  Primeros: " + n.First + "Siguientes: " + n.Last + "Anulable: " + n.Anulable + "Nivel: " + n.Nivel);
-            } else if (n.Left != null && n.Right != null) {
-                System.out.println("Nombre: " + n.Name + " Symbol: " + n.Information.getLexema() + " Izquierda: " + n.Left.Name + "  Derecha: " + n.Right.Name + "Primeros: " + n.First + "Siguientes: " + n.Last + "Anulable: " + n.Anulable + "Nivel: " + n.Nivel);
-            }
-        }
-    }
-
-    public void PreO() {
-        this.PreOrden(this.Root);
-    }
-
-    private void PreOrden(Node n) {
-        if (n != null) {
-            System.out.println(n.Information.getLexema());
-            PreOrden(n.Left);
-            PreOrden(n.Right);
-        }
-    }
-
-    public void GenerateImage(int n) {
-        final String rutaDot = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot.exe";
-        String rutaImagen = "Arbol.png";
-        String rutatxt = "Arbol.txt";
-        String parametroT = "-Tpng";
-        String parametroO = "-o";
-
-        FileWriter archivo = null;
-        PrintWriter pw = null;
-
-        try {
-            archivo = new FileWriter(rutatxt);
-            pw = new PrintWriter(archivo);
-            pw.println("digraph G {");
-            pw.println("rankdir=TB");
-//            pw.println("node [shape = record, style=filled, fillcolor=seashell2]");
-            pw.println("node [shape = circle, style=filled, fillcolor=seashell2,width=1.8, fixedsize=true]");
-            if (Root != null) {
-                pw.print(Code(Root));
-            } else {
-                pw.print("node0[label=\"Not Found Files\"];");
-            }
-            pw.println("}");
-            archivo.close();
-
-            // Creates rutaImagen of Structure
-            try {
-                String[] cmd = new String[5];
-                cmd[0] = rutaDot;
-                cmd[1] = parametroT;
-                cmd[2] = rutatxt;
-                cmd[3] = parametroO;
-                cmd[4] = rutaImagen;
-
-                Runtime rt = Runtime.getRuntime();
-                rt.exec(cmd);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        } catch (IOException e) {
-            System.err.println("ERROR en archivo: " + e.toString());
-        }
-    }
-
-    private String Code(Node n) {
-        String values = "";
-        if (n.Left == null && n.Right == null) {
-            values += n.Name + " [label=\"" + n.Information.getLexema() + "\\n Anulabilidad: " + n.Anulable + "\\n Primeros: " + n.First + " \\n Ultimos: " + n.Last + "\"]\n";
-        } else {
-            values += n.Name + " [label=\"" + n.Information.getLexema() + "\\n Anulabilidad: " + n.Anulable + "\\n Primeros: " + n.First + " \\n Ultimos: " + n.Last + "\"]\n";
-        }
-        if (n.Left != null) {
-            values += Code(n.Left) + n.Name + "->" + n.Left.Name + "\n";
-        }
-        if (n.Right != null) {
-            values += Code(n.Right) + n.Name + "->" + n.Right.Name + "\n";
-        }
-        return values;
-    }
-
+    //--------------------------------------------------------------------------
+    //Calculate Anulable, First y Last -----------------------------------------
     public void Calculate() {
         int nivels = this.Nivels();
-        System.out.println(nivels);
+//        System.out.println(nivels);
         for (int i = nivels; i > 0; i--) {
             for (int j = 0; j < Symbols.size(); j++) {
                 Node n = (Node) Symbols.get(j);
@@ -238,18 +145,9 @@ public class Tree {
             }
         }
     }
+    //--------------------------------------------------------------------------
 
-    private int Nivels() {
-        int nivels = 0;
-        for (int i = 0; i < this.Symbols.size(); i++) {
-            Node n = (Node) Symbols.get(i);
-            if (n.Nivel > nivels) {
-                nivels = n.Nivel;
-            }
-        }
-        return nivels;
-    }
-
+    //Calculate Table Siguientes ----------------------------------------------
     public void Table_Follow() {
         for (Object current : Symbols) {
             Node n = (Node) current;
@@ -310,14 +208,9 @@ public class Tree {
             }
         }
     }
+    //--------------------------------------------------------------------------
 
-    public void PrintT() {
-        for (int i = 0; i < Table_Follow.size(); i++) {
-            Follow tf = (Follow) Table_Follow.get(i);
-            System.out.println("Index: " + i + "  Name: " + tf.Information.getLexema() + "  Siguientes: " + tf.Follows());
-        }
-    }
-
+    // Table Transitions for Automata ------------------------------------------
     public void Table_Transitions() {
         ArrayList<Object> States = new ArrayList();
 
@@ -331,9 +224,10 @@ public class Tree {
             State st = null;
             Current_Positions = "";
             for (int i = 0; i < States.size(); i++) {
-                st = (State) States.get(i);
-                if (st.Verificated == false) {
-                    st.Verificated = true;
+                State aux = (State) States.get(i);
+                if (aux.Verificated == false) {
+                    aux.Verificated = true;
+                    st = aux;
                     Current_Positions = st.Follows;
                     break;
                 }
@@ -342,22 +236,25 @@ public class Tree {
             if (st != null && !Current_Positions.isEmpty()) {
                 String[] Positions = Current_Positions.split(",");
                 for (int i = 0; i < Positions.length; i++) {
-                    int index = Integer.parseInt(Positions[i]) - 1;
-                    if (index >= 0 && index < (this.Table_Follow.size() - 1)) {
-                        Follow f = (Follow) this.Table_Follow.get(index);
-                        String Current_Follow = f.Follows();
-                        if (!Current_Follow.isEmpty()) {
-                            st.AddOperation(f.Information.getLexema(), Current_Follow);
-                            boolean find_States = false;
-                            for (int j = 0; j < States.size(); j++) {
-                                State st2 = (State) States.get(j);
-                                if (st2.Follows.equalsIgnoreCase(Current_Follow)) {
-                                    find_States = true;
-                                    break;
+                    if (IsDigit(Positions[i])) {
+                        int index = Integer.parseInt(Positions[i]) - 1;
+                        if (index >= 0 && index < (this.Table_Follow.size() - 1)) {
+                            Follow f = (Follow) this.Table_Follow.get(index);
+                            String Current_Lex = f.Information.getLexema();
+                            String Current_Follow = ReturnFollows(Current_Lex);
+                            if (!Current_Follow.isEmpty()) {
+                                st.AddOperation(f.Information.getLexema(), Current_Follow);
+                                boolean find_States = false;
+                                for (int j = 0; j < States.size(); j++) {
+                                    State st2 = (State) States.get(j);
+                                    if (st2.Follows.equalsIgnoreCase(Current_Follow)) {
+                                        find_States = true;
+                                        break;
+                                    }
                                 }
-                            }
-                            if (find_States == false) {
-                                States.add(new State(Current_Follow));
+                                if (find_States == false) {
+                                    States.add(new State(Current_Follow));
+                                }
                             }
                         }
                     }
@@ -374,19 +271,302 @@ public class Tree {
             }
         }
 
+        for (Object x : States) {
+            State state = (State) x;
+            System.out.println(state.tostring());
+        }
+
         for (int i = 0; i < States.size(); i++) {
-            State ver = (State) States.get(i);
-            System.out.println(ver.tostring());
+            State st = (State) States.get(i);
+            this.Table_Transitions.add(new State_Final(i, st.Follows));
         }
-        
-        for(Object temp: States){
-            State ver = (State)temp;
-            this.Table_Transitions.add(new Transition(this.State,ver.Follows));
-            this.State++;
+
+        for (int i = 0; i < States.size(); i++) {
+            State st = (State) States.get(i);
+            for (Object x : st.Operations) {
+                Operation op = (Operation) x;
+                int estado = this.ReturnState(op.Follow);
+                String symbol = op.Symbol;
+
+                if (estado != -1 && !symbol.isEmpty()) {
+                    State_Final sf = (State_Final) this.Table_Transitions.get(i);
+                    sf.addTransition(estado, symbol);
+                }
+            }
         }
-        
-        for(Object temp: this.Table_Transitions){
-            System.out.println(temp.toString());
+
+//        for (Object x : this.Table_Transitions) {
+//            State_Final state = (State_Final) x;
+//            System.out.println(state.toString());
+//        }
+        //----------------------------------------------------------------------
+    }
+
+    //Reports ------------------------------------------------------------------
+    public void GenerateImageTree(String name) {
+        final String rutaDot = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot.exe";
+        String rutaImagen = name + ".png";
+        String rutatxt = "Arbol.txt";
+        String parametroT = "-Tpng";
+        String parametroO = "-o";
+
+        FileWriter archivo = null;
+        PrintWriter pw = null;
+
+        try {
+            archivo = new FileWriter(rutatxt);
+            pw = new PrintWriter(archivo);
+            pw.println("digraph G {");
+            pw.println("rankdir=TB");
+            pw.println("node [shape = circle, style=filled, fillcolor=seashell2,width=1.5, fixedsize=true]");
+            if (Root != null) {
+                pw.print(CodeGraphivzTree(Root));
+            } else {
+                pw.print("node0[label=\"Not Found Files\"];");
+            }
+            pw.println("}");
+            archivo.close();
+
+            // Creates rutaImagen of Structure
+            try {
+                String[] cmd = new String[5];
+                cmd[0] = rutaDot;
+                cmd[1] = parametroT;
+                cmd[2] = rutatxt;
+                cmd[3] = parametroO;
+                cmd[4] = rutaImagen;
+
+                Runtime rt = Runtime.getRuntime();
+                rt.exec(cmd);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR en archivo: " + e.toString());
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    public void GenerateImageTableF(String name) {
+        final String rutaDot = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot.exe";
+        String rutaImagen = name + ".png";
+        String rutatxt = "Table_Follow.txt";
+        String parametroT = "-Tpng";
+        String parametroO = "-o";
+
+        FileWriter archivo = null;
+        PrintWriter pw = null;
+
+        try {
+            archivo = new FileWriter(rutatxt);
+            pw = new PrintWriter(archivo);
+            pw.println("digraph G {");
+            pw.println("rankdir = LR");
+            pw.println("node[shape=plaintext]");
+            pw.println("a[label=<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"1\">");
+
+            if (!this.Table_Follow.isEmpty()) {
+                pw.println("<TR>");
+                pw.println("<TD BGCOLOR=\"#F6DDCC\"> Index </TD>");
+                pw.println("<TD BGCOLOR=\"#F6DDCC\"> Simbol </TD>");
+                pw.println("<TD BGCOLOR=\"#F6DDCC\"> Follow </TD>");
+                pw.println("</TR>");
+            }
+            int index = 1;
+            for (Object x : this.Table_Follow) {
+                Follow f = (Follow) x;
+                pw.println("<TR>");
+                pw.println("<TD BGCOLOR=\"#F6DDCC\">" + index + "</TD>");
+                pw.println("<TD BGCOLOR=\"#F6DDCC\">" + f.Information.getLexema() + "</TD>");
+                pw.println("<TD BGCOLOR=\"#F6DDCC\">" + f.Follows() + "</TD>");
+                pw.println("</TR>");
+                index++;
+            }
+
+            pw.println("</TABLE>>]");
+            pw.println("b [style=filled, fillcolor=seashell2, label=\"Table of Follows: " + name + "\"]");
+            pw.println("}");
+            archivo.close();
+
+            // Creates rutaImagen of Structure
+            try {
+                String[] cmd = new String[5];
+                cmd[0] = rutaDot;
+                cmd[1] = parametroT;
+                cmd[2] = rutatxt;
+                cmd[3] = parametroO;
+                cmd[4] = rutaImagen;
+
+                Runtime rt = Runtime.getRuntime();
+                rt.exec(cmd);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR en archivo: " + e.toString());
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    public void GenerateImageTableT(String name) {
+        final String rutaDot = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot.exe";
+        String rutaImagen = name + ".png";
+        String rutatxt = "Table_Transition.txt";
+        String parametroT = "-Tpng";
+        String parametroO = "-o";
+
+        FileWriter archivo = null;
+        PrintWriter pw = null;
+
+        ArrayList<String> Aux = new ArrayList();
+
+        //Symbols for Table
+        for (Object x : this.Table_Follow) {
+            Follow f = (Follow) x;
+            if (Aux.isEmpty()) {
+                Aux.add(f.Information.getLexema());
+            } else {
+                boolean find = false;
+                for (int i = 0; i < Aux.size(); i++) {
+                    if (Aux.get(i).equals(f.Information.getLexema())) {
+                        find = true;
+                        break;
+                    }
+                }
+                if (find == false) {
+                    Aux.add(f.Information.getLexema());
+                }
+            }
+        }
+        Aux.remove(Aux.size()-1);
+
+        try {
+            archivo = new FileWriter(rutatxt);
+            pw = new PrintWriter(archivo);
+            pw.println("digraph G {");
+            pw.println("rankdir = LR");
+            pw.println("node[shape=plaintext]");
+            pw.println("a[label=<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"1\">");
+
+            //Imprime Los Simbolos en El Encabezado
+            if (!this.Table_Follow.isEmpty()) {
+                pw.println("<TR>");
+                pw.println("<TD BGCOLOR=\"#F6DDCC\"> Estado </TD>");
+            }
+            for (String x : Aux) {
+                pw.println("<TD BGCOLOR=\"#F6DDCC\"> " + x + " </TD>");
+            }
+            pw.println("</TR>");
+
+            for (Object x : this.Table_Transitions) {
+                State_Final t = (State_Final) x;
+                pw.println("<TR>");
+                pw.println("<TD BGCOLOR=\"#F6DDCC\">S" + t.Estado + "</TD>");
+
+                for (String temp : Aux) {
+                    boolean find = false;
+                    for (Object y : t.Transition) {
+                        Transition tran = (Transition) y;
+                        if (tran.Lexema.equals(temp)) {
+                            find = true;
+                            pw.println("<TD BGCOLOR=\"#F6DDCC\">S" + tran.State + "</TD>");
+                            break;
+                        }
+                    }
+                    if (find == false) {
+                        pw.println("<TD BGCOLOR=\"#F6DDCC\">Error</TD>");
+                    }
+                }
+                pw.println("</TR>");
+            }
+
+            pw.println("</TABLE>>]");
+            pw.println("b [style=filled, fillcolor=seashell2, label=\"Table of Transitions: " + name + "\"]");
+            pw.println("}");
+            archivo.close();
+
+            // Creates rutaImagen of Structure
+            try {
+                String[] cmd = new String[5];
+                cmd[0] = rutaDot;
+                cmd[1] = parametroT;
+                cmd[2] = rutatxt;
+                cmd[3] = parametroO;
+                cmd[4] = rutaImagen;
+
+                Runtime rt = Runtime.getRuntime();
+                rt.exec(cmd);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR en archivo: " + e.toString());
+        }
+    }
+//
+//    //AFD-----------------------------------------------------------------------
+
+    public void GenerateImageAFD(String name) {
+        final String rutaDot = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot.exe";
+        String rutaImagen = name + ".png";
+        String rutatxt = "AFD.txt";
+        String parametroT = "-Tpng";
+        String parametroO = "-o";
+
+        FileWriter archivo = null;
+        PrintWriter pw = null;
+
+        try {
+            archivo = new FileWriter(rutatxt);
+            pw = new PrintWriter(archivo);
+            pw.println("digraph G {");
+            pw.println("rankdir=LR");
+            String accept = "" + this.Table_Follow.size();
+            for (Object x : this.Table_Transitions) {
+                State_Final t = (State_Final) x;
+                System.out.println(t.Siguiente);
+                if (t.Siguiente.contains(accept)) {
+                    pw.println("S" + t.Estado + "[shape = doublecircle, style=filled, fillcolor=seashell2,width=.8, fixedsize=true]");
+                } else {
+                    pw.println("S" + t.Estado + "[shape = circle, style=filled, fillcolor=seashell2,width=.8, fixedsize=true]");
+                }
+            }
+
+            for (Object x : this.Table_Transitions) {
+                State_Final t = (State_Final) x;
+                for (Object y : t.Transition) {
+                    Transition t2 = (Transition) y;
+                    pw.println("S" + t.Estado + "->S" + t2.State + " [label=\"" + t2.Lexema + "\"]");
+                }
+            }
+
+            pw.println("}");
+            archivo.close();
+
+            // Creates rutaImagen of Structure
+            try {
+                String[] cmd = new String[5];
+                cmd[0] = rutaDot;
+                cmd[1] = parametroT;
+                cmd[2] = rutatxt;
+                cmd[3] = parametroO;
+                cmd[4] = rutaImagen;
+
+                Runtime rt = Runtime.getRuntime();
+                rt.exec(cmd);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR en archivo: " + e.toString());
+        }
+    }
+    //--------------------------------------------------------------------------
+
+    public void PrintT() {
+        for (int i = 0; i < Table_Follow.size(); i++) {
+            Follow tf = (Follow) Table_Follow.get(i);
+//            System.out.println("Index: " + i + "  Name: " + tf.Information.getLexema() + "  Siguientes: " + tf.Follows());
         }
     }
 
@@ -396,6 +576,98 @@ public class Tree {
             return true;
         } catch (NumberFormatException e) {
             return false;
+        }
+    }
+
+    private int ReturnState(String Follow) {
+        int state = -1;
+        for (Object temp : this.Table_Transitions) {
+            State_Final t = (State_Final) temp;
+            if (t.Siguiente.equalsIgnoreCase(Follow)) {
+                state = t.Estado;
+                break;
+            }
+        }
+        return state;
+    }
+
+    private String ReturnFollows(String Current_Lex) {
+        String Follows = "";
+        for (Object temp : this.Table_Follow) {
+            Follow f = (Follow) temp;
+            if (f.Information.getLexema().equalsIgnoreCase(Current_Lex)) {
+                if (Follows.isEmpty()) {
+                    Follows = f.Follows();
+                } else {
+                    if (!f.Follows().isEmpty()) {
+                        if (!Follows.contains(f.Follows())) {
+                            Follows = Follows + "," + f.Follows();
+                        }
+                    }
+                }
+            }
+        }
+        return Follows;
+    }
+
+    private String CodeGraphivzTree(Node n) {
+        String values = "";
+        if (n.Left == null && n.Right == null) {
+            values += n.Name + " [label=\"" + n.Information.getLexema() + "\\n Anulabilidad: " + n.Anulable + "\\n Primeros: " + n.First + " \\n Ultimos: " + n.Last + "\"]\n";
+        } else {
+            values += n.Name + " [label=\"" + n.Information.getLexema() + "\\n Anulabilidad: " + n.Anulable + "\\n Primeros: " + n.First + " \\n Ultimos: " + n.Last + "\"]\n";
+        }
+        if (n.Left != null) {
+            values += CodeGraphivzTree(n.Left) + n.Name + "->" + n.Left.Name + "\n";
+        }
+        if (n.Right != null) {
+            values += CodeGraphivzTree(n.Right) + n.Name + "->" + n.Right.Name + "\n";
+        }
+        return values;
+    }
+
+    private int Nivels() {
+        int nivels = 0;
+        for (int i = 0; i < this.Symbols.size(); i++) {
+            Node n = (Node) Symbols.get(i);
+            if (n.Nivel > nivels) {
+                nivels = n.Nivel;
+            }
+        }
+        return nivels;
+    }
+
+    private boolean IsTwo(String lexema) {
+        return lexema.equals(".") | lexema.equals("|");
+    }
+
+    private boolean IsUnity(String lexema) {
+        return lexema.equalsIgnoreCase("?") | lexema.equalsIgnoreCase("*")
+                | lexema.equalsIgnoreCase("+");
+    }
+
+    private void printTree() {
+        for (int i = 0; i < Symbols.size(); i++) {
+            Node n = (Node) Symbols.get(i);
+            if (n.Left == null && n.Right == null) {
+                System.out.println("Nombre: " + n.Name + " Symbol: " + n.Information.getLexema() + " Izquierda: ----------          Derecha: ----------  Primeros: " + n.First + "Siguientes: " + n.Last + "Anulable: " + n.Anulable + "Nivel: " + n.Nivel);
+            } else if (n.Left != null && n.Right == null) {
+                System.out.println("Nombre: " + n.Name + " Symbol: " + n.Information.getLexema() + " Izquierda: " + n.Left.Name + "  Derecha: ----------  Primeros: " + n.First + "Siguientes: " + n.Last + "Anulable: " + n.Anulable + "Nivel: " + n.Nivel);
+            } else if (n.Left != null && n.Right != null) {
+                System.out.println("Nombre: " + n.Name + " Symbol: " + n.Information.getLexema() + " Izquierda: " + n.Left.Name + "  Derecha: " + n.Right.Name + "Primeros: " + n.First + "Siguientes: " + n.Last + "Anulable: " + n.Anulable + "Nivel: " + n.Nivel);
+            }
+        }
+    }
+
+    public void PreO() {
+        this.PreOrden(this.Root);
+    }
+
+    private void PreOrden(Node n) {
+        if (n != null) {
+            System.out.println(n.Information.getLexema());
+            PreOrden(n.Left);
+            PreOrden(n.Right);
         }
     }
 }

@@ -97,17 +97,17 @@ public class Analyzer_Lexico {
         }
         return txt;
     }
-    
-    private String DeleteChar(String chain){
-        String ret="";
-        for(int i = 0; i<chain.length(); i++){
-            if(i!=0 && i+1!=chain.length()){
+
+    private String DeleteChar(String chain) {
+        String ret = "";
+        for (int i = 0; i < chain.length(); i++) {
+            if (i != 0 && i + 1 != chain.length()) {
                 ret += chain.charAt(i);
             }
         }
         return ret;
     }
-    
+
     public void File_Separate(ArrayList Sets, ArrayList Expressions, ArrayList Tests) {
         Type_File t;
         String Id = "";
@@ -116,6 +116,20 @@ public class Analyzer_Lexico {
         Boolean Two = false;
         Boolean Comma = false;
         Boolean Asignation = false;
+        
+        ArrayList<Object> Aux = new ArrayList();
+        for(int i = 0; i<Tokens.size();i++){
+            t = (Type_File)Tokens.get(i);
+            if(t.getType()!=5 && t.getType()!=6){
+                Aux.add(t);
+            }
+        }
+        this.Tokens.clear();
+        for(Object temp:Aux){
+            t = (Type_File)temp;
+            this.Tokens.add(t);
+        }
+        Aux.clear();
 
         //Separate Sets---------------------------------------------------------
         for (int i = 0; i < Tokens.size(); i++) {
@@ -146,7 +160,7 @@ public class Analyzer_Lexico {
             }
         }
 
-        //Separeta Expression Regular ------------------------------------------
+        //Separete Expression Regular ------------------------------------------
         WR = false;
         Comma = false;
         Asignation = false;
@@ -172,7 +186,7 @@ public class Analyzer_Lexico {
                     Id = "";
                 } else {
                     if (Id.length() != 0 && Expression.length() != 0) {
-                        Expressions.add(new Expression(Id, Expression));
+                        Expressions.add(new Expression(Id, "."+Expression+"\"#\"")); //Agregamos Simbolo #
                         Id = "";
                         Expression = "";
                         Asignation = false;
@@ -195,7 +209,7 @@ public class Analyzer_Lexico {
                 pg++;
             } else if (pg >= 4 && t.getType() == Type_File.Id) {
                 Id = t.getLexema();
-            } else if (pg >= 4 && t.getLexema().equalsIgnoreCase("->")) {
+            } else if (pg >= 4 && t.getLexema().equalsIgnoreCase(":")) {
                 Asignation = true;
 
             } else if (pg >= 4 && t.getLexema().equalsIgnoreCase(";")) {
@@ -234,10 +248,9 @@ public class Analyzer_Lexico {
                     } else if (letter == '{') {
                         Estado = 4;
                         Lexema += letter;
-                        
-                    }else if(letter == ' ' | letter == '\n'){
-                        
-                                
+
+                    } else if (letter == ' ' | letter == '\n') {
+
                     } else {
                         System.out.println("Fatal Error ->" + letter);
                     }
@@ -289,7 +302,7 @@ public class Analyzer_Lexico {
             }
         }
     }
-    
+
     //Analyzer Principal -------------------------------------------------------
     public void Analyzer(String Input) {
         Tokens.clear();
